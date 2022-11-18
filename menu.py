@@ -70,14 +70,47 @@ def cart(update,context):
         ]
     )
     text = '🛒 Cart\n\nChili Pizza (14") - $22.99 x1 = $22.99\n\n💵 Total: $22.99'
-    update.message.reply_text(text,reply_murkup = keyboard)
+    update.message.reply_text(text,reply_markup = keyboard)
+def userinfo(update,context):
+    first_name = update.message.from_user.first_name
+    addresses = InlineKeyboardButton(
+        text='🏠 Addresses',
+        callback_data='address'
+    )
+    add_address = InlineKeyboardButton(
+        text= '➕ Add address',
+        callback_data='add'
+    )
+    keyboard = InlineKeyboardMarkup(
+        [
+            [addresses,add_address]
+        ]
+    )
+    text = f'👤 {first_name}\n🤝 Invited friends: 0\n💸 Bonus balance: $0.0\nℹ️ You can get 5.0% on your bonus balance from the amount of each order of your invited friends.'
+    update.message.reply_text(text,reply_markup = keyboard)
+def administration(update,context):
+    users = KeyboardButton(text= '👥 Users')
+    orders = KeyboardButton(text= '🏷 Orders')
+    welcome_text = KeyboardButton(text='👋 Welcome text')
+    bonus = KeyboardButton(text='🤑 Bonus rate')
+    add = KeyboardButton(text='➕ Add category')
+    remove = KeyboardButton(text='🗑 Remove category')
+    new = KeyboardButton(text='📦 New product')
+    delete = KeyboardButton(text='🗑 Delete product')
+    exit = KeyboardButton(text='🚪 Exit')
+
+    keyboard = ReplyKeyboardMarkup(
+        [
+            []
+        ]
+    )
 updater = Updater('5643654386:AAGaxNP-8Kkwzi8Ko047p0BZBd3t6a0eIu4')
 
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('🏬 Catalog'),catalog))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('📦 Orders'),order))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('🛒 Cart'),cart))
-
+updater.dispatcher.add_handler(MessageHandler(Filters.text('👤 User info'),userinfo))
 
 
 
