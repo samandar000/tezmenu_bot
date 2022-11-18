@@ -101,9 +101,17 @@ def administration(update,context):
 
     keyboard = ReplyKeyboardMarkup(
         [
-            []
-        ]
+            [users,orders],
+            [welcome_text,bonus],
+            [add,remove],
+            [new,delete],
+            [exit]
+        ],
+        resize_keyboard=True
     )
+    text = update.message.text
+    update.message.reply_text(text,reply_markup=keyboard)
+
 updater = Updater('5643654386:AAGaxNP-8Kkwzi8Ko047p0BZBd3t6a0eIu4')
 
 updater.dispatcher.add_handler(CommandHandler('start', start))
@@ -111,6 +119,8 @@ updater.dispatcher.add_handler(MessageHandler(Filters.text('🏬 Catalog'),catal
 updater.dispatcher.add_handler(MessageHandler(Filters.text('📦 Orders'),order))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('🛒 Cart'),cart))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('👤 User info'),userinfo))
+updater.dispatcher.add_handler(MessageHandler(Filters.text('🎛 Administration'),administration))
+updater.dispatcher.add_handler(MessageHandler(Filters.text('🚪 Exit'),start))
 
 
 
