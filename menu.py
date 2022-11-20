@@ -84,7 +84,7 @@ def userinfo(update,context):
     keyboard = InlineKeyboardMarkup(
         [
             [addresses,add_address]
-        ]
+        ],resize_keyboard=True
     )
     text = f'👤 {first_name}\n🤝 Invited friends: 0\n💸 Bonus balance: $0.0\nℹ️ You can get 5.0% on your bonus balance from the amount of each order of your invited friends.'
     update.message.reply_text(text,reply_markup = keyboard)
@@ -111,6 +111,35 @@ def administration(update,context):
     )
     text = update.message.text
     update.message.reply_text(text,reply_markup=keyboard)
+def users(update,context):
+    update.message.reply_text(text='No users')
+def welcome_text(update,context):
+    cancel = KeyboardButton(text='❌ Cancel')
+
+    keyboard = ReplyKeyboardMarkup(
+        [
+            [cancel]
+        ],
+        resize_keyboard=True
+    )
+    text = '👋 New welcome text Send the text of greeting in one message.You can use Telegram Markdown to format your message:*bold text* _italic text_'
+    update.message.reply_text(text,reply_markup = keyboard)
+def cancel(update,context):
+    query = update.callback_query
+    query.edit_message_text(text = '❌ Order cancelled') 
+def bonus_rate(update,context):
+    cancel = KeyboardButton(text='❌ Cancel')
+
+    keyboard = ReplyKeyboardMarkup(
+        [
+            [cancel]
+        ],
+        resize_keyboard=True
+        
+    )
+    text = '🤑 Bonus rate'
+    update.message.reply_text(text,reply_markup = keyboard)
+    
 
 updater = Updater('5643654386:AAGaxNP-8Kkwzi8Ko047p0BZBd3t6a0eIu4')
 
@@ -121,7 +150,10 @@ updater.dispatcher.add_handler(MessageHandler(Filters.text('🛒 Cart'),cart))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('👤 User info'),userinfo))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('🎛 Administration'),administration))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('🚪 Exit'),start))
-
+updater.dispatcher.add_handler(MessageHandler(Filters.text('👥 Users'),users))
+updater.dispatcher.add_handler(MessageHandler(Filters.text('👋 Welcome text'),welcome_text))
+updater.dispatcher.add_handler(MessageHandler(Filters.text('❌ Cancel'),administration))
+updater.dispatcher.add_handler(MessageHandler(Filters.text('🤑 Bonus rate'),bonus_rate))
 
 
 
