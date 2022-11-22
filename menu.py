@@ -139,7 +139,47 @@ def bonus_rate(update,context):
     )
     text = '🤑 Bonus rate'
     update.message.reply_text(text,reply_markup = keyboard)
-    
+def notaviable(update,context):
+    Users = KeyboardButton(text='👥 Users')
+    Orders = KeyboardButton(text='🏷 Orders')
+    Welcome = KeyboardButton(text='👋 Welcome text')
+    Bonus = KeyboardButton(text='🤑 Bonus rate')
+    Add = KeyboardButton(text='➕ Add category')
+    Remove = KeyboardButton(text='🗑 Remove category')
+    New = KeyboardButton(text='📦 New product')
+    Delete = KeyboardButton(text='🗑 Delete product')
+    Exit = KeyboardButton(text='🚪 Exit')
+    keyboard = ReplyKeyboardMarkup(
+        [
+            [Users,Orders],
+            [Welcome,Bonus],
+            [Add,Remove],
+            [New,Delete],
+            [Exit]
+        ],
+        resize_keyboard=True
+    )
+    text = '⚡️ Not available in demo version.'
+    update.message.reply_text(text,reply_markup=keyboard)
+def addresses(update,context):
+    query = update.callback_query
+    bot = context.bot
+    chat_id = update.callback_query.message.chat.id
+    text = ' Please send the address to which you want your order to be delivered.'
+    location = KeyboardButton(
+        text = '📍 Location',
+        request_location=True
+    )
+    cancel = KeyboardButton(text = '🚪 Exit')
+    keyboard = ReplyKeyboardMarkup(
+        [
+            [location],
+            [cancel]
+        ],
+        resize_keyboard=True
+    )
+    bot.sendMessage(chat_id,text=text,reply_markup=keyboard)
+    query.answer('Working...')
 
 updater = Updater('5643654386:AAGaxNP-8Kkwzi8Ko047p0BZBd3t6a0eIu4')
 
@@ -154,7 +194,12 @@ updater.dispatcher.add_handler(MessageHandler(Filters.text('👥 Users'),users))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('👋 Welcome text'),welcome_text))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('❌ Cancel'),administration))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('🤑 Bonus rate'),bonus_rate))
+updater.dispatcher.add_handler(MessageHandler(Filters.text('➕ Add category'),notaviable))
+updater.dispatcher.add_handler(MessageHandler(Filters.text('📦 New product'),notaviable))
+updater.dispatcher.add_handler(MessageHandler(Filters.text('🗑 Remove category'),notaviable))
+updater.dispatcher.add_handler(MessageHandler(Filters.text('🗑 Delete product'),notaviable))
 
+updater.dispatcher.add_handler(CallbackQueryHandler(addresses,pattern='addresses'))
 
 
 
