@@ -72,10 +72,13 @@ def cart(update,context):
     text = '🛒 Cart\n\nChili Pizza (14") - $22.99 x1 = $22.99\n\n💵 Total: $22.99'
     update.message.reply_text(text,reply_markup = keyboard)
 def userinfo(update,context):
+    bot = context.bot
+    query = update.callback_query
+    chat_id = update.message.chat.id
     first_name = update.message.from_user.first_name
     addresses = InlineKeyboardButton(
         text='🏠 Addresses',
-        callback_data='address'
+        callback_data='iplace'
     )
     add_address = InlineKeyboardButton(
         text= '➕ Add address',
@@ -87,7 +90,7 @@ def userinfo(update,context):
         ],resize_keyboard=True
     )
     text = f'👤 {first_name}\n🤝 Invited friends: 0\n💸 Bonus balance: $0.0\nℹ️ You can get 5.0% on your bonus balance from the amount of each order of your invited friends.'
-    update.message.reply_text(text,reply_markup = keyboard)
+    bot.sendMessage(chat_id,text=text,reply_markup = keyboard)
 def administration(update,context):
     users = KeyboardButton(text= '👥 Users')
     orders = KeyboardButton(text= '🏷 Orders')
@@ -179,8 +182,48 @@ def addresses(update,context):
         resize_keyboard=True
     )
     bot.sendMessage(chat_id,text=text,reply_markup=keyboard)
+    
     query.answer('Working...')
-
+def addaddresses(update,context):
+    text ='📍 Please send the address to which you want your order to be delivered.'
+    bot = context.bot 
+    query = update.callback_query
+    chat_id = update.callback_query.message.chat.id 
+    bot.sendMessage(chat_id,text=text)
+    query.answer(text='Working...')
+def accept(update,context):
+    query = update.callback_query
+    bot = context.bot
+    chat_id = update.callback_query.message.chat.id
+    text1 = '📦 Your order\n\nChili Pizza (14") - $22.99 x1 = $22.99\n\n💵 Amount to pay: $22.99\n\n💬 Comment to the order: 📦 Orders'
+    text2= '✅ Order placed!'
+    query.edit_message_text(text1)
+    bot.sendMessage(chat_id,text=text2)
+def cancel(update,context):
+    query = update.callback_query
+    query.edit_message_text(text='❌ Order cancelled')
+def placeorder(update,context):
+    query = update.callback_query
+    bot = context.bot
+    chat_id = update.callback_query.message.chat.id
+    text = '📍 Choose shipping address:'
+    location = KeyboardButton(
+        text = '📍 Location',
+        request_location=True
+    )
+    cancel = KeyboardButton(text='🚪 Exit')
+    keyboard = ReplyKeyboardMarkup(
+        [
+            [location],
+            [cancel]
+        ],
+        resize_keyboard=True
+    )
+    bot.sendMessage(chat_id,text=text,reply_markup=keyboard)
+    query.answer('Waiting...')
+def clear(update,context):
+    query = update.callback_query
+    query.edit_message_text(text='✅ Cart cleared')
 updater = Updater('5643654386:AAGaxNP-8Kkwzi8Ko047p0BZBd3t6a0eIu4')
 
 updater.dispatcher.add_handler(CommandHandler('start', start))
@@ -199,9 +242,13 @@ updater.dispatcher.add_handler(MessageHandler(Filters.text('📦 New product'),n
 updater.dispatcher.add_handler(MessageHandler(Filters.text('🗑 Remove category'),notaviable))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('🗑 Delete product'),notaviable))
 
-updater.dispatcher.add_handler(CallbackQueryHandler(addresses,pattern='addresses'))
 
-
+updater.dispatcher.add_handler(CallbackQueryHandler(addaddresses,pattern='add'))
+updater.dispatcher.add_handler(CallbackQueryHandler(addresses,pattern='iplace'))
+updater.dispatcher.add_handler(CallbackQueryHandler(accept,pattern='accept'))
+updater.dispatcher.add_handler(CallbackQueryHandler(cancel,pattern='cancel'))
+updater.dispatcher.add_handler(CallbackQueryHandler(placeorder,pattern='placeorder'))
+updater.dispatcher.add_handler(CallbackQueryHandler(clear,pattern='clear'))
 
 updater.start_polling()
 updater.idle()
