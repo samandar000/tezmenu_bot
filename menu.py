@@ -6,6 +6,10 @@ from telegram.ext import(
     CallbackQueryHandler
 )
 from telegram import KeyboardButton,ReplyKeyboardMarkup,InlineKeyboardButton,InlineKeyboardMarkup
+import os
+
+TOKEN = os.environ['TOKEN']
+
 def start(update,context):
     text = 'Hello! 👋 \nThis is a demo version of the Telegram Store bot. You can test out catalog function and checkout process.'
     bot = context.bot
@@ -224,7 +228,7 @@ def placeorder(update,context):
 def clear(update,context):
     query = update.callback_query
     query.edit_message_text(text='✅ Cart cleared')
-updater = Updater('5643654386:AAGaxNP-8Kkwzi8Ko047p0BZBd3t6a0eIu4')
+updater = Updater(token=TOKEN)
 
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(MessageHandler(Filters.text('🏬 Catalog'),catalog))
